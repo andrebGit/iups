@@ -197,7 +197,7 @@ class _CadUserState extends State<CadUser> {
           Icons.manage_accounts,
           color: Colors.red,
         ),
-        title: Text("Usuário Administradr(a)"),
+        title: Text("Usuário Administrador(a)"),
       );
     } else {
       return ListTile(
