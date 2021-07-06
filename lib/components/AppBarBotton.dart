@@ -6,7 +6,11 @@ import 'package:sus_plus/page/who.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppBarBotton extends StatelessWidget {
+  final Function() loadParents;
+
   final DatabaseHelper del = DatabaseHelper();
+
+  AppBarBotton({Key key, this.loadParents}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -37,7 +41,9 @@ class AppBarBotton extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ListaPeople(),
                     ),
-                  ),
+                  ).then((value) {
+                    loadParents();
+                  }),
                   tooltip: 'Open navigation menu',
                 ),
                 IconButton(

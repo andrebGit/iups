@@ -70,6 +70,7 @@ class _IndexState extends State<Index> {
   }
 
   void loadAll() {
+    print('okokokoko');
     setState(() {
       peopleModel.getPeople().then((value) {
         if (value != null) {
@@ -98,7 +99,9 @@ class _IndexState extends State<Index> {
       /*  appBar: AppBar(
         title: Text('ok'),
       ), */
-      bottomNavigationBar: AppBarBotton(),
+      bottomNavigationBar: AppBarBotton(
+        loadParents: loadAll,
+      ),
       body: Container(
         color: Colors.blue[100].withAlpha(90),
         child: CustomScrollView(
