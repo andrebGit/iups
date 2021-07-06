@@ -44,7 +44,7 @@ class SplashPageState extends State<SplashPage> {
         children: [
           Image(
             width: 200.0,
-            image: AssetImage('src/img/logo1.png'),
+            image: AssetImage('src/img/logo.png'),
             fit: BoxFit.cover,
           ),
           Text(

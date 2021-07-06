@@ -16,7 +16,6 @@ class ListUs extends StatefulWidget {
 
 class _ListUsState extends State<ListUs> {
   List<bool> _selections = List.generate(3, (_) => false);
-  DatabaseHelper del = DatabaseHelper();
 
   UsModel us = UsModel();
   List<Us> cardUs = [];
@@ -91,17 +90,6 @@ class _ListUsState extends State<ListUs> {
               openApp(70.0);
             },
           ),
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              del.delete().then((val) {
-                print(val);
-              });
-            },
-          )
         ],
         title: Text("Unidades"),
       ),

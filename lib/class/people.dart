@@ -1,5 +1,6 @@
 class People {
   int id;
+  int type;
   String name;
   int sex;
   String birth;
@@ -8,7 +9,8 @@ class People {
   String imgUrl;
 
   People({
-    // this.id,
+    this.id,
+    this.type,
     this.name,
     this.sex,
     this.birth,
@@ -22,6 +24,9 @@ class People {
     if (id != null) {
       map['idpeople'] = id;
     }
+    if (type != null) {
+      map['type'] = type;
+    }
     map['name'] = name;
     map['sex'] = sex;
     map['birth'] = birth;
@@ -34,6 +39,7 @@ class People {
 
   People.fromMap(Map<String, dynamic> map) {
     id = map['idpeople'];
+    type = map['type'];
     name = map['name'];
     sex = map['sex'];
     birth = map['birth'];

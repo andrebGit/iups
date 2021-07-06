@@ -18,7 +18,6 @@ class DatabaseHelper {
 
   //verifica o database para starta
   Future<Database> get database async {
-    print(_database);
     if (_database == null) {
       _database = await initDatabase();
     }
@@ -39,7 +38,6 @@ class DatabaseHelper {
 
   // criando o banco de dados caso não exista
   void _createDb(Database db, int newVersion) async {
-    print("Criando banco de dados agora");
     // executa a criação do database
     DatabaseSql sqlData = DatabaseSql();
     await sqlData.create(db);

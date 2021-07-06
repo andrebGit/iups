@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sus_plus/class/people.dart';
 import 'package:sus_plus/components/AppBarBotton.dart';
 import 'package:sus_plus/components/cardUs.dart';
 import 'package:sus_plus/components/cns.dart';
@@ -16,16 +17,32 @@ class Index extends StatefulWidget {
 }
 
 class _IndexState extends State<Index> {
-  PeopleModel people = PeopleModel();
+  PeopleModel peopleModel = PeopleModel();
+  People people = People();
+  List<People> ListPeople;
+  List<dynamic> listCns = [];
+
+  String nameAdmin = '';
   @override
   void initState() {
     super.initState();
     print("Pegando dados de pessoas");
-    people.getPeople().then((value) {
-      print(value);
+    peopleModel.getPeople().then((value) {
+      ListPeople = value;
+      loadCns();
     });
-    /* setState(() {
-        }); */
+  }
+
+  void loadCns() {
+    setState(() {
+      listCns = listCard();
+    });
+  }
+
+  void addNameAdmin(val) {
+    setState(() {
+      nameAdmin = val;
+    });
   }
 
   @override
@@ -43,7 +60,7 @@ class _IndexState extends State<Index> {
               pinned: true,
               delegate: SliverHeader(
                 backgroundColor: Colors.green,
-                title: 'André Barbosa',
+                title: nameAdmin,
               ),
             ),
             SliverToBoxAdapter(
@@ -69,68 +86,8 @@ class _IndexState extends State<Index> {
                   ),
                   //Cartão do sus
                   ScrollHorizontCard(
-                    body: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 2),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Cns(
-                              mediaW: constraints.maxWidth,
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 2),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Cns(
-                              mediaW: constraints.maxWidth,
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 2),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Cns(
-                              mediaW: constraints.maxWidth,
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 2),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Cns(
-                              mediaW: constraints.maxWidth,
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 2),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return GestureDetector(
-                              onTap: () {
-                                openDialog();
-                              },
-                              child: Cns(
-                                mediaW: constraints.maxWidth,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                    // Carrega os cartões SUS
+                    body: listCns == null ? [Text('ok')] : listCns,
                   ),
 
                   Container(
@@ -193,12 +150,40 @@ class _IndexState extends State<Index> {
     );
   }
 
-  void openDialog({title, body}) {
+  List<dynamic> listCard() {
+    List<dynamic> card = ListPeople.map((el) {
+      if (el.type == 0) {
+        addNameAdmin(el.name);
+      }
+      return Padding(
+        padding: EdgeInsets.only(top: 2),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return GestureDetector(
+              onTap: () {
+                openDialog(peopleIndex: el);
+              },
+              child: Cns(
+                people: el,
+                mediaW: constraints.maxWidth,
+              ),
+            );
+          },
+        ),
+      );
+    }).toList();
+
+    return card;
+  }
+
+  void openDialog({People peopleIndex}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialogs(
-          body: Cns(),
+          body: Cns(
+            people: peopleIndex,
+          ),
         );
       },
     );

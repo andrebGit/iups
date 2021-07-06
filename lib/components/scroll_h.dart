@@ -44,16 +44,16 @@ class _ScrollHorizontCardState extends State<ScrollHorizontCard> {
       width: dims.x,
       height: dims.y,
       padding: EdgeInsets.all(3),
-      decoration: deconretion(),
+      //decoration: deconretion(),
       child: PageView.builder(
         controller: controller,
         itemCount: widget.body.length,
         itemBuilder: (_, currentindex) {
           activ = (currentindex == _correntIndex);
           top = activ ? 0.0 : 50.0;
-          Object border = activ
+          /*  Object border = activ
               ? Colors.blueGrey[200].withOpacity(0.5)
-              : Colors.transparent;
+              : Colors.transparent; */
 
           return AnimatedContainer(
             padding: EdgeInsets.only(

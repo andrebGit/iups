@@ -80,8 +80,6 @@ class ShowAlert {
   }
 
   call(context) {
-    print(closeTime);
-    print('================================');
     if (closeTime == 0) {
       return false;
     }

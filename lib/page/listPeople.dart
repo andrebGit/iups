@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sus_plus/class/formattedData.dart';
 import 'package:sus_plus/class/people.dart';
 import 'package:sus_plus/class/shadowCard.dart';
 import 'package:sus_plus/components/detailsUs.dart';
@@ -8,6 +9,7 @@ import 'package:sus_plus/components/load.dart';
 import 'package:sus_plus/models/peopleModel.dart';
 import 'package:sus_plus/page/cadUser.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ListaPeople extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _ListaPeopleState extends State<ListaPeople> {
   PeopleModel peopleModel = PeopleModel();
   List<People> cardPeople = [];
   List<People> filterList = [];
-
+  int typeUser;
   bool isCheck = false;
 
   double appH = 0;
@@ -28,22 +30,30 @@ class _ListaPeopleState extends State<ListaPeople> {
 
   bool notfound = false;
   var _clearFind = TextEditingController();
+  FormattedData format = FormattedData();
   @override
   void initState() {
-    _selections[0] = true;
-    peopleModel.getPeople().then((value) {
-      addCard(value);
-    });
+    load();
     super.initState();
   }
 
-  addCard(val) {
+  void load() {
+    setState(() {
+      _selections[0] = true;
+      peopleModel.getPeople().then((value) {
+        typeUser = value == null ? 0 : 1;
+        addCard(value);
+      });
+    });
+  }
+
+  void addCard(val) {
     setState(() {
       cardPeople = val;
     });
   }
 
-  openApp(val) {
+  void openApp(val) {
     setState(() {
       appH = val;
     });
@@ -53,18 +63,18 @@ class _ListaPeopleState extends State<ListaPeople> {
   Widget build(BuildContext context) {
     // crio o filtro
 
+    filterList = [];
     if (filterText != null) {
-      //filterList = [];
       for (dynamic val in cardPeople) {
         String data;
         if (_selections[0]) {
           data = val.name.toString().toLowerCase();
         } else if (_selections[1]) {
-          data = val.sex;
-        } else {
           data = val.cns;
+        } else {
+          data = val.cpf;
         }
-
+        print(data);
         if (data.contains(filterText.toLowerCase())) {
           // add no list
           filterList.add(val);
@@ -75,41 +85,32 @@ class _ListaPeopleState extends State<ListaPeople> {
       }
     } else if (cardPeople == null) {
       notfound = true;
-      filterList.addAll([]);
     } else {
       filterList.addAll(cardPeople);
     }
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CadUser(),
+              builder: (context) => CadUser(typeUser: typeUser),
             ),
-          );
+          ).then((val) {
+            load();
+          });
         },
         child: const Icon(
           Icons.add,
-          color: Colors.black,
+          color: Colors.white,
         ),
-        backgroundColor: Colors.grey[200],
       ),
       appBar: AppBar(
         bottom: PreferredSize(
             child: appH == 0 ? Text('') : form(),
             preferredSize: Size.fromHeight(appH)),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.plus_one_sharp,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              openApp(70.0);
-            },
-          ),
           IconButton(
             icon: Icon(
               Icons.search_rounded,
@@ -188,17 +189,38 @@ class _ListaPeopleState extends State<ListaPeople> {
         child: Column(
           children: [
             Icon(
-              Icons.people,
+              filterList[index].type == 0
+                  ? Icons.manage_accounts
+                  : Icons.person_pin,
               color: Colors.white,
               size: 30,
             ),
+            filterList[index].type == 0
+                ? Text(
+                    'Adm',
+                    style: TextStyle(color: Colors.white),
+                  )
+                : Text(
+                    'User',
+                    style: TextStyle(color: Colors.white),
+                  ),
           ],
         ),
       ),
       //body of list
       title: GestureDetector(
         onTap: () {
-          //   openDialog(data: filterList[index]);
+          // Navegaçao
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CadUser(
+                  peopleReload: filterList[index],
+                  typeUser: filterList[index].type,
+                ),
+              )).then((val) {
+            load();
+          });
         },
         child: bodyCard(index),
       ),
@@ -217,7 +239,6 @@ class _ListaPeopleState extends State<ListaPeople> {
   }
 
   Widget bodyCard(index) {
-    print('$index) Nome: ${filterList[index].name}');
     return Container(
       padding: EdgeInsets.all(7),
       decoration: BoxDecoration(
@@ -229,12 +250,13 @@ class _ListaPeopleState extends State<ListaPeople> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
+            //Name
             '${filterList[index].name}',
             //filterList[index].id,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          // Endereço
-          Text('${filterList[index].sex}',
+          // Sex
+          Text(getSex(filterList[index].sex),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -244,7 +266,9 @@ class _ListaPeopleState extends State<ListaPeople> {
           Row(
             children: [
               Icon(Icons.cake, color: Colors.grey[300]),
-              Text('${filterList[index].birth}',
+              Text(
+                  // Converte data para padrão do Brasil
+                  format.dateBr(val: filterList[index].birth),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -253,7 +277,14 @@ class _ListaPeopleState extends State<ListaPeople> {
             ],
           ),
           paddings(),
-          Text('${filterList[index].cns}',
+          Text('CNS: ${format.cns(val: filterList[index].cns)}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 14,
+              )),
+          paddings(),
+          Text('CPF: ${format.cpf(val: filterList[index].cpf)}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -262,6 +293,19 @@ class _ListaPeopleState extends State<ListaPeople> {
         ],
       ),
     );
+  }
+
+  String maskCard(int index) {
+    String cns = filterList[index].cns;
+    if (cns == null) {
+      return '';
+    }
+    var cnsM = MaskTextInputFormatter(mask: '###.###.###-##', initialText: cns);
+    return (cnsM.getMaskedText());
+  }
+
+  String getSex(val) {
+    return val == 1 ? 'Masculino' : 'Feminino';
   }
 
   void goMap(String geo) async {
@@ -280,6 +324,7 @@ class _ListaPeopleState extends State<ListaPeople> {
     return Padding(padding: EdgeInsets.only(top: 7));
   }
 
+//Formulario de busca
   Widget form() {
     return Container(
       height: 126,
@@ -288,6 +333,7 @@ class _ListaPeopleState extends State<ListaPeople> {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
+              Padding(padding: EdgeInsets.only(left: 20)),
               GestureDetector(
                 onTap: () {
                   openApp(0.0);
@@ -307,20 +353,20 @@ class _ListaPeopleState extends State<ListaPeople> {
               ),
               Container(
                 margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width / 4),
+                    left: MediaQuery.of(context).size.width / 6),
                 child: ToggleButtons(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.local_hospital),
+                      child: Icon(Icons.people),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.phone),
+                      child: Icon(Icons.credit_card),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.home_work),
+                      child: Text('CPF'),
                     ),
                   ],
                   isSelected: _selections,
@@ -339,7 +385,7 @@ class _ListaPeopleState extends State<ListaPeople> {
               ),
             ],
           ),
-          new ListTile(
+          ListTile(
             // leading:
             title: new TextField(
               onChanged: (txt) {

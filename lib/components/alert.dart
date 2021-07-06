@@ -26,11 +26,25 @@ class Alert {
         closeTime: timeClose,
         btnClose: closeBtn,
       );
+    } else if (type == 'success') {
+      //chamada do diolog
+      ShowAlert(
+        context: context,
+        body: success(),
+        closeTime: timeClose,
+        btnClose: closeBtn,
+      );
     }
   }
+  MaterialColor typeColor = Colors.green;
 
   Widget danger() {
+    typeColor = Colors.red;
     return bodyIn(Icons.error);
+  }
+
+  Widget success() {
+    return bodyIn(Icons.check_box);
   }
 
   Widget bodyIn(IconData icon) {
@@ -51,7 +65,7 @@ class Alert {
           Icon(
             icon,
             size: 45,
-            color: Colors.red,
+            color: typeColor,
           ),
           Padding(
               padding: EdgeInsets.only(
@@ -62,7 +76,7 @@ class Alert {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.red,
+              color: typeColor,
             ),
           ),
           Padding(padding: EdgeInsets.only(top: 7.0)),

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:sus_plus/class/dimesionsCns.dart';
+import 'package:sus_plus/class/formattedData.dart';
+import 'package:sus_plus/class/people.dart';
 
 class Cns extends StatelessWidget {
   final mediaW;
   final mediaH;
-  const Cns({this.mediaH = 0, this.mediaW = 0});
+  final People people;
+  const Cns({
+    this.mediaH = 0,
+    this.mediaW = 0,
+    this.people,
+  });
   //final tmCns = 36.894164194;
 
   @override
@@ -28,7 +35,8 @@ class Cns extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(bottom: 2),
               child: Text(
-                'André Babosa',
+                //Nome
+                people.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: calc(dims.x, 16),
@@ -39,8 +47,9 @@ class Cns extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(bottom: 7),
+              //Data de nascimento
               child: Text(
-                '26/10/1979 Sexo: Masculino',
+                '${FormattedData().dateBr(val: people.birth)}, Sexo: ${getSex(people.sex)}',
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: calc(dims.x, 12),
@@ -51,8 +60,9 @@ class Cns extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(bottom: 7),
+              //Cartão sus
               child: Text(
-                '000 0000 0000 0000',
+                people.cns,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: calc(dims.x, 18),
@@ -61,8 +71,9 @@ class Cns extends StatelessWidget {
                 ),
               ),
             ),
+            //CPF
             Text(
-              '000.000.000-00',
+              'CPF: ${people.cpf}',
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: calc(dims.x, 16),
@@ -86,6 +97,10 @@ class Cns extends StatelessWidget {
         //color: Colors.green,
       ),
     );
+  }
+
+  String getSex(val) {
+    return val == 1 ? 'Masculino' : 'Feminino';
   }
 
   calc(screenX, size) {

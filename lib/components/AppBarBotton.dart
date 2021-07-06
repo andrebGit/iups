@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sus_plus/page/cadUser.dart';
+import 'package:sus_plus/helper/databasseHelper.dart';
 import 'package:sus_plus/page/listPeople.dart';
 import 'package:sus_plus/page/listUs.dart';
+import 'package:sus_plus/page/who.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppBarBotton extends StatelessWidget {
+  final DatabaseHelper del = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -49,6 +51,20 @@ class AppBarBotton extends StatelessWidget {
                   tooltip: 'Open navigation menu',
                 ), */
                 IconButton(
+                  icon: const Icon(Icons.coffee),
+                  onPressed: () {
+                    print('centrebutton');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Who(),
+                        // ListUs(),
+                      ),
+                    );
+                  },
+                  tooltip: 'Open navigation menu',
+                ),
+                IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: () {
                     print('centrebutton');
@@ -62,6 +78,18 @@ class AppBarBotton extends StatelessWidget {
                   },
                   tooltip: 'Open navigation menu',
                 ),
+                // para remover o banco de dados basta descomentar
+                /*   IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    del.delete().then((val) {
+                      print(val);
+                    });
+                  },
+                ) */
               ],
             ),
           ),
