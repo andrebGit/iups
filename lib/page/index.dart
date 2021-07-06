@@ -8,6 +8,7 @@ import 'package:sus_plus/components/scroll_h.dart';
 import 'package:sus_plus/components/sliverHeader.dart';
 import 'package:sus_plus/components/solicitarCardSus.dart';
 import 'package:sus_plus/models/peopleModel.dart';
+import 'package:sus_plus/page/cadUser.dart';
 import 'package:sus_plus/page/listUs.dart';
 
 class Index extends StatefulWidget {
@@ -20,16 +21,62 @@ class _IndexState extends State<Index> {
   PeopleModel peopleModel = PeopleModel();
   People people = People();
   List<People> ListPeople;
-  List<dynamic> listCns = [];
+  List<dynamic> listCns = [Text('carregando...')];
 
-  String nameAdmin = '';
+  String nameAdmin = 'Seu nome aqui...';
   @override
   void initState() {
+    setState(() {
+      listCns = [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CadUser(typeUser: 0),
+                )).then((value) {
+              loadAll();
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(20),
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+            ),
+            child: Center(
+              child: Text(
+                'Toque aqui e \nCadastre os seus dados',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        )
+      ];
+      peopleModel.getPeople().then((value) {
+        if (value != null) {
+          ListPeople = value;
+          loadCns();
+        }
+      });
+    });
     super.initState();
-    print("Pegando dados de pessoas");
-    peopleModel.getPeople().then((value) {
-      ListPeople = value;
-      loadCns();
+  }
+
+  void loadAll() {
+    setState(() {
+      peopleModel.getPeople().then((value) {
+        if (value != null) {
+          ListPeople = value;
+          loadCns();
+        }
+      });
     });
   }
 
@@ -87,7 +134,7 @@ class _IndexState extends State<Index> {
                   //Cartão do sus
                   ScrollHorizontCard(
                     // Carrega os cartões SUS
-                    body: listCns == null ? [Text('ok')] : listCns,
+                    body: listCns,
                   ),
 
                   Container(

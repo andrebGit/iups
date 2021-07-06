@@ -36,20 +36,10 @@ class AppBarBotton extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ListaPeople(),
-                      //CadUser(),
-                      // ListUs(),
                     ),
                   ),
                   tooltip: 'Open navigation menu',
                 ),
-                /* IconButton(
-                  icon: const Icon(Icons.map),
-                  onPressed: () {
-                    print('merdas');
-                    navigateTo(-3.823216, -38.481700);
-                  },
-                  tooltip: 'Open navigation menu',
-                ), */
                 IconButton(
                   icon: const Icon(Icons.coffee),
                   onPressed: () {
@@ -79,10 +69,10 @@ class AppBarBotton extends StatelessWidget {
                   tooltip: 'Open navigation menu',
                 ),
                 // para remover o banco de dados basta descomentar
-                /*   IconButton(
+                /*  IconButton(
                   icon: Icon(
                     Icons.settings,
-                    color: Colors.white,
+                    color: Colors.red,
                   ),
                   onPressed: () {
                     del.delete().then((val) {
